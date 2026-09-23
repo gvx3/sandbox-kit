@@ -1,0 +1,38 @@
+schemaVersion: "2"
+kind: sandbox
+name: pi           
+displayName: pi-coding-agent
+description: "Customized pi agent"
+
+
+sandbox:
+  image: docker/sandbox-templates:shell-docker
+  entrypoint: [pi]
+  resources:                                   
+    cpu: 2
+    memory: 2g
+
+credentials:
+  - service: deepseek-service
+    apiKey:
+      name: DEEPSEEK_API_KEY
+      proxyManaged: true
+      inject:
+        - domain: api.deepseek.com
+          scheme: bearer
+
+permissions:
+  network:
+    allow:
+      - "trivy.dev"
+      - "registry.npmjs.org"
+      - "api.deepseek.com"
+      - "pi.dev"
+      - "deb.debian.org"
+
+setup:
+  install:
+    - command: "npm install -g --ignore-scripts @earendil-works/pi-coding-agent"
+      description: Install pi-coding-agent if the image doesn't already provide it
+
+
