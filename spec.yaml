@@ -7,7 +7,21 @@ description: "Customized pi agent"
 
 sandbox:
   image: docker/sandbox-templates:shell-docker
-  entrypoint: [pi]
+  entrypoint: ["/bin/bash", "-c"]
+  command:
+    - |
+      set -e
+      if [ ! -f /tmp/.pi-setup-complete ]; then
+        echo "First run: Installing Pi extensions..."
+        pi install npm:@dietrichgebert/ponytail
+        pi install npm:pi-web-access
+        pi install npm:pi-subagents
+        pi install npm:billion-context
+        touch /tmp/.pi-setup-complete
+      else
+        echo "Setup already complete. Skipping installation."
+      fi
+      exec pi
   resources:                                   
     cpu: 2
     memory: 2g
